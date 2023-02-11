@@ -35,6 +35,8 @@
 // }
 //
 
+import { CELL_VALUE, GAME_STATUS } from "./constants.js";
+
 // Input: an array of 9 items
 // Output: an object as mentioned above
 export function checkGameStatus(cellValues) {
@@ -42,8 +44,50 @@ export function checkGameStatus(cellValues) {
   // Please feel free to add more helper function if you want.
   // It's not required to write everything just in this function.
 
+  // cellValues là 9 giá trị là x,o hoặc emty
+  if (!Array.isArray(cellValues) || cellValues.length != 9) {
+    throw new Error('Lỗi truyền tham số !');
+  }
+
+  const checkSetList = [ // danh sách các trường hợp x hoặc o sẽ win
+    [0, 1, 2], //  a set
+    [3, 4, 5], 
+    [6, 7, 8],
+
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const winSetIndex = checkSetList.findIndex( set => {
+    const first = cellValues[set[0]];
+    const second = cellValues[set[1]];
+    const third = cellValues[set[2]];
+
+    return first != '' && first == second && second == third;
+  })
+
+  // WIN
+  if (winSetIndex >= 0) {
+    console.log('có chạy vào đây không !')
+    const winValueIndex = checkSetList[winSetIndex][1];
+
+    const winValue = cellValues[winValueIndex];
+    return { 
+      status: winValue == CELL_VALUE.CIRCLE ?  GAME_STATUS.O_WIN : GAME_STATUS.X_WIN,
+      winPositions: checkSetList[winSetIndex]
+          }
+  }
+
+  // end 
+  // playing
+  const isEndGame = cellValues.filter(x => x == '').length == 0;
   return {
-    status: GAME_STATUS.PLAYING,
+    status: isEndGame ? GAME_STATUS.ENDED : GAME_STATUS.PLAYING,
     winPositions: [],
   };
+  
 }
