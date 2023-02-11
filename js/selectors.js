@@ -23,3 +23,9 @@ export function getReplayButtonElement() {
     return document.getElementById('replayGame');
 }
 
+export function getBlockElement() {
+    return document.getElementById('cellList');
+}
+
+
+
